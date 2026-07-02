@@ -8,6 +8,7 @@ class Account extends Model
 {
     protected $table = 'accounts';
     protected $primaryKey = 'account_id';
+    public $incrementing = true;
 
     protected $casts = [
         'code' => 'int',
