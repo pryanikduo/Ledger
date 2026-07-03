@@ -2,48 +2,49 @@
 
 declare(strict_types=1);
 
-namespace App\MoonShine\Resources\Account\Pages;
+namespace App\MoonShine\Resources\JournalEntry\Pages;
 
 use MoonShine\Laravel\Pages\Crud\DetailPage;
 use MoonShine\Contracts\UI\ComponentContract;
 use MoonShine\UI\Components\Table\TableBuilder;
 use MoonShine\Contracts\UI\FieldContract;
+use App\MoonShine\Resources\JournalEntry\JournalEntryResource;
+use App\MoonShine\Resources\Transaction\TransactionResource;
 use App\MoonShine\Resources\Account\AccountResource;
 use MoonShine\Support\ListOf;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
-use MoonShine\UI\Fields\Switcher;
-use MoonShine\UI\Fields\Select;
-use MoonShine\UI\Fields\Date;
+use MoonShine\Laravel\Fields\Relationships\HasMany;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use Throwable;
 
 
 /**
- * @extends DetailPage<AccountResource>
+ * @extends DetailPage<JournalEntryResource>
  */
-class AccountDetailPage extends DetailPage
+class JournalEntryDetailPage extends DetailPage
 {
-    protected string $title = 'Подробный просмотр';
     /**
      * @return list<FieldContract>
      */
     protected function fields(): iterable
     {
         return [
-            ID::make(column: 'account_id')->sortable(),
-            Text::make('Название', 'name'),
-            Text::make('Код', 'code'),
-            Select::make('Тип счета', 'type')
-                ->options([
-                    'asset' => 'Имущество',
-                    'liability' => 'Мат. ответственность',
-                    'equity' => 'Капитал',
-                    'revenue' => 'Доход',
-                    'expense' => 'Расход',
-                ]),
-            Switcher::make('Активность', 'is_active'),
-            Date::make('Дата создания', 'created_at')->withTime(),
-            Date::make('Дата обновления', 'updated_at')->withTime(),
+            ID::make(column: 'journal_id'),
+            BelongsTo::make(
+                'Транзакция', 
+                'transaction',
+                'description',
+                resource: TransactionResource::class
+            ),
+            BelongsTo::make(
+                'Счет', 
+                'account',
+                'name',
+                resource: AccountResource::class
+            ),
+            Text::make('Сумма', 'amount'),
+            Text::make('Тип операции', 'type'),
         ];
     }
 

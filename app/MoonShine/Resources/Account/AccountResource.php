@@ -21,6 +21,7 @@ class AccountResource extends ModelResource
     protected string $model = Account::class;
 
     protected string $title = 'Счета';
+
     
     /**
      * @return list<class-string<PageContract>>

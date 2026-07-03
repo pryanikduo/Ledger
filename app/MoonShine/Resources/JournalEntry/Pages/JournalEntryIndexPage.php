@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\MoonShine\Resources\Account\Pages;
+namespace App\MoonShine\Resources\JournalEntry\Pages;
 
 use MoonShine\Laravel\Pages\Crud\IndexPage;
 use MoonShine\Contracts\UI\ComponentContract;
@@ -11,19 +11,15 @@ use MoonShine\Contracts\UI\FieldContract;
 use MoonShine\Laravel\QueryTags\QueryTag;
 use MoonShine\UI\Components\Metrics\Wrapped\Metric;
 use MoonShine\UI\Fields\ID;
-use MoonShine\UI\Fields\Text;
-use MoonShine\UI\Fields\Date;
-use MoonShine\UI\Fields\Switcher;
-use MoonShine\UI\Fields\Select;
-use App\MoonShine\Resources\Account\AccountResource;
+use App\MoonShine\Resources\JournalEntry\JournalEntryResource;
 use MoonShine\Support\ListOf;
 use Throwable;
 
 
 /**
- * @extends IndexPage<AccountResource>
+ * @extends IndexPage<JournalEntryResource>
  */
-class AccountIndexPage extends IndexPage
+class JournalEntryIndexPage extends IndexPage
 {
     protected bool $isLazy = true;
 
@@ -33,19 +29,7 @@ class AccountIndexPage extends IndexPage
     protected function fields(): iterable
     {
         return [
-            ID::make(column: 'account_id')->sortable(),
-            Text::make('Название', 'name'),
-            Text::make('Код', 'code'),
-            Select::make('Тип счета', 'type')
-                ->options([
-                    'asset' => 'Имущество',
-                    'liability' => 'Мат. ответственность',
-                    'equity' => 'Капитал',
-                    'revenue' => 'Доход',
-                    'expense' => 'Расход',
-                ]),
-            Switcher::make('Активность', 'is_active'),
-            Date::make('Дата создания', 'created_at')->withTime(),
+            ID::make(),
         ];
     }
 

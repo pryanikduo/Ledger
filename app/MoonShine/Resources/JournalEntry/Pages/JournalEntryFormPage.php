@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\MoonShine\Resources\Account\Pages;
+namespace App\MoonShine\Resources\JournalEntry\Pages;
 
 use MoonShine\Laravel\Pages\Crud\FormPage;
 use MoonShine\Contracts\UI\ComponentContract;
@@ -10,21 +10,17 @@ use MoonShine\Contracts\UI\FormBuilderContract;
 use MoonShine\UI\Components\FormBuilder;
 use MoonShine\Contracts\UI\FieldContract;
 use MoonShine\Contracts\Core\TypeCasts\DataWrapperContract;
-use App\MoonShine\Resources\Account\AccountResource;
+use App\MoonShine\Resources\JournalEntry\JournalEntryResource;
 use MoonShine\Support\ListOf;
 use MoonShine\UI\Fields\ID;
-use MoonShine\UI\Fields\Text;
-use MoonShine\UI\Fields\Date;
-use MoonShine\UI\Fields\Switcher;
-use MoonShine\UI\Fields\Select;
 use MoonShine\UI\Components\Layout\Box;
 use Throwable;
 
 
 /**
- * @extends FormPage<AccountResource>
+ * @extends FormPage<JournalEntryResource>
  */
-class AccountFormPage extends FormPage
+class JournalEntryFormPage extends FormPage
 {
     /**
      * @return list<ComponentContract|FieldContract>
@@ -33,17 +29,7 @@ class AccountFormPage extends FormPage
     {
         return [
             Box::make([
-                ID::make(column: 'account_id')->sortable(),
-                Text::make('Название', 'name'),
-                Select::make('Тип счета', 'type')
-                    ->options([
-                        'asset' => 'Имущество',
-                        'liability' => 'Мат. ответственность',
-                        'equity' => 'Капитал',
-                        'revenue' => 'Доход',
-                        'expense' => 'Расход',
-                    ]),
-                Switcher::make('Активность', 'is_active'),
+                ID::make(),
             ]),
         ];
     }

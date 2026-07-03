@@ -11,8 +11,17 @@ use MoonShine\Contracts\UI\FieldContract;
 use MoonShine\Laravel\QueryTags\QueryTag;
 use MoonShine\UI\Components\Metrics\Wrapped\Metric;
 use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Text;
+use MoonShine\UI\Fields\Date;
+use MoonShine\UI\Fields\DateRange;
+use MoonShine\UI\Fields\Textarea;
+use MoonShine\UI\Fields\Select;
 use App\MoonShine\Resources\Transaction\TransactionResource;
+use App\MoonShine\Resources\JournalEntry\JournalEntryResource;
+use App\MoonShine\Resources\Account\AccountResource;
 use MoonShine\Support\ListOf;
+use MoonShine\Laravel\Fields\Relationships\HasMany;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use Throwable;
 
 
@@ -29,9 +38,30 @@ class TransactionIndexPage extends IndexPage
     protected function fields(): iterable
     {
         return [
-            ID::make(),
+            ID::make(column: 'transaction_id'),
+            Date::make('Дата транзакции', 'date')->withTime(),
+            Textarea::make('Описание', 'description'),
+            // HasMany::make(
+            //     'Проводки',
+            //     'journal_entries', 
+            //     resource: JournalEntryResource::class
+            // )->fields([
+            //     BelongsTo::make(
+            //         'Счет', 
+            //         'account',
+            //         'name',
+            //         resource: AccountResource::class
+            //     ),
+            //     Text::make('Сумма', 'amount'),
+            //     Select::make('Тип операции', 'type')
+            //     ->options([
+            //         'debit' => 'Дебет',
+            //         'credit' => 'Кредит'
+            //     ]),
+            // ])
         ];
     }
+
 
     /**
      * @return ListOf<ActionButtonContract>
@@ -46,7 +76,9 @@ class TransactionIndexPage extends IndexPage
      */
     protected function filters(): iterable
     {
-        return [];
+        return [
+            DateRange::make('Дата транзакции', 'date'),
+        ];
     }
 
     /**

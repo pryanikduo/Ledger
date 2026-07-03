@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Transaction extends Model
 {
@@ -16,7 +17,7 @@ class Transaction extends Model
 
     public $timestamps = false;
 
-    public function journal_entries() {
+    public function journal_entries(): HasMany {
         return $this->hasMany(JournalEntry::class, 'transaction_id', 'transaction_id');
     }
 }

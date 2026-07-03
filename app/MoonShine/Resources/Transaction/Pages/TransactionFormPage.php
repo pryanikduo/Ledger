@@ -11,8 +11,16 @@ use MoonShine\UI\Components\FormBuilder;
 use MoonShine\Contracts\UI\FieldContract;
 use MoonShine\Contracts\Core\TypeCasts\DataWrapperContract;
 use App\MoonShine\Resources\Transaction\TransactionResource;
+use App\MoonShine\Resources\JournalEntry\JournalEntryResource;
+use App\MoonShine\Resources\Account\AccountResource;
 use MoonShine\Support\ListOf;
 use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Date;
+use MoonShine\UI\Fields\Text;
+use MoonShine\UI\Fields\Textarea;
+use MoonShine\UI\Fields\Select;
+use MoonShine\Laravel\Fields\Relationships\HasMany;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use MoonShine\UI\Components\Layout\Box;
 use Throwable;
 
@@ -22,6 +30,7 @@ use Throwable;
  */
 class TransactionFormPage extends FormPage
 {
+    protected string $title = 'Редактирование';
     /**
      * @return list<ComponentContract|FieldContract>
      */
@@ -29,7 +38,27 @@ class TransactionFormPage extends FormPage
     {
         return [
             Box::make([
-                ID::make(),
+                ID::make(column: 'transaction_id'),
+                Date::make('Дата создания', 'date'),
+                Textarea::make('Описание', 'description'),
+                HasMany::make(
+                    'Проводки',
+                    'journal_entries', 
+                    resource: JournalEntryResource::class
+                )->fields([
+                    BelongsTo::make(
+                        'Счет', 
+                        'account',
+                        'name',
+                        resource: AccountResource::class
+                    ),
+                    Text::make('Сумма', 'amount'),
+                    Select::make('Тип операции', 'type')
+                    ->options([
+                        'debit' => 'Дебет',
+                        'credit' => 'Кредит'
+                    ]),
+                ])
             ]),
         ];
     }

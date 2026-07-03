@@ -20,7 +20,11 @@ class TransactionResource extends ModelResource
 {
     protected string $model = Transaction::class;
 
-    protected string $title = 'Transactions';
+    protected string $title = 'Транзакции';
+
+    // public static array $with = [
+    //     'journal_entries'
+    // ];
     
     /**
      * @return list<class-string<PageContract>>
