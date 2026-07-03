@@ -11,6 +11,7 @@ use MoonShine\Contracts\ColorManager\ColorManagerContract;
 use MoonShine\Contracts\ColorManager\PaletteContract;
 use App\MoonShine\Resources\Account\AccountResource;
 use MoonShine\MenuManager\MenuItem;
+use App\MoonShine\Resources\Transaction\TransactionResource;
 
 final class MoonShineLayout extends AppLayout
 {
@@ -31,6 +32,7 @@ final class MoonShineLayout extends AppLayout
         return [
             ...parent::menu(),
             MenuItem::make(AccountResource::class, 'Accounts'),
+            MenuItem::make(TransactionResource::class, 'Transactions'),
         ];
     }
 
