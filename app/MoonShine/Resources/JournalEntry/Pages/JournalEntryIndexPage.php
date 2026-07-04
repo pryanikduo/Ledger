@@ -10,9 +10,16 @@ use MoonShine\UI\Components\Table\TableBuilder;
 use MoonShine\Contracts\UI\FieldContract;
 use MoonShine\Laravel\QueryTags\QueryTag;
 use MoonShine\UI\Components\Metrics\Wrapped\Metric;
-use MoonShine\UI\Fields\ID;
 use App\MoonShine\Resources\JournalEntry\JournalEntryResource;
+use App\MoonShine\Resources\Transaction\TransactionResource;
+use App\MoonShine\Resources\Account\AccountResource;
 use MoonShine\Support\ListOf;
+use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Text;
+use MoonShine\UI\Fields\Number;
+use MoonShine\UI\Fields\Select;
+use MoonShine\Laravel\Fields\Relationships\HasMany;
+use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use Throwable;
 
 
@@ -29,7 +36,23 @@ class JournalEntryIndexPage extends IndexPage
     protected function fields(): iterable
     {
         return [
-            ID::make(),
+            ID::make(column: 'journal_id'),
+            BelongsTo::make(
+                'Транзакция', 
+                'transaction',
+                'description', 
+                resource: TransactionResource::class
+            ),
+            BelongsTo::make(
+                'Счет', 
+                'account',
+                'name', 
+                resource: AccountResource::class),
+            Number::make('Сумма', 'amount'),
+            Select::make('Тип', 'type')->options([
+                'debit' => 'Дебет',
+                'credit' => 'Кредит',
+            ]),
         ];
     }
 

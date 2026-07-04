@@ -12,6 +12,9 @@ class LedgerService {
         $result = DB::transaction(function () use ($data) {
             $sumDebit = 0;
             $sumCredit = 0;
+            if (count($data['entries']) < 2) {
+                throw new \Exception('Должно быть минимум 2 проводки');
+            }
             if(!empty($data)) {
                 foreach($data['entries'] as $i) {
                     if($i['type'] == 'debit'){
@@ -44,5 +47,44 @@ class LedgerService {
             return $transaction;
         });
         return $result;
+    }
+
+    public function updateTransaction(Transaction $transaction, array $data) {
+        return DB::transaction(function () use ($transaction, $data) {
+            if (count($data['entries']) < 2) {
+                throw new \Exception('Должно быть минимум 2 проводки');
+            }
+            $sumDebit = 0;
+            $sumCredit = 0;
+            if(!empty($transaction) && !empty($data)) {
+                foreach($data['entries'] as $i){
+                    if($i['type'] === 'debit') {
+                        $sumDebit += $i['amount'];
+                    } else {
+                        $sumCredit += $i['amount'];
+                    }
+                }
+                if(abs($sumDebit - $sumCredit) > 0.0001) {
+                    throw new \Exception('Суммы не совпадают');
+                } else {
+                    unset($transaction->journal_entries);
+                
+                     $transaction->date = \Carbon\Carbon::parse($data['date'])->format('Y-m-d H:i:s');
+                    $transaction->description = $data['description'];
+                    $transaction->save();
+
+                    $transaction->journal_entries()->delete();
+
+                    foreach($data['entries'] as $entry) {
+                        $transaction->journal_entries()->create([
+                            'account_id' => $entry['account_id'],
+                            'amount' => $entry['amount'],
+                            'type' => $entry['type'],
+                        ]);
+                    }
+                }
+            }
+            return $transaction;
+        });
     }
 }

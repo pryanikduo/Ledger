@@ -19,7 +19,9 @@ use MoonShine\UI\Fields\Date;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Textarea;
 use MoonShine\UI\Fields\Select;
+use MoonShine\UI\Fields\Number;
 use MoonShine\Laravel\Fields\Relationships\HasMany;
+use MoonShine\Laravel\Fields\Relationships\RelationRepeater;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use MoonShine\UI\Components\Layout\Box;
 use Throwable;
@@ -30,7 +32,6 @@ use Throwable;
  */
 class TransactionFormPage extends FormPage
 {
-    protected string $title = 'Редактирование';
     /**
      * @return list<ComponentContract|FieldContract>
      */
@@ -39,26 +40,35 @@ class TransactionFormPage extends FormPage
         return [
             Box::make([
                 ID::make(column: 'transaction_id'),
-                Date::make('Дата создания', 'date'),
+                Date::make('Дата создания', 'date')->withTime(),
                 Textarea::make('Описание', 'description'),
-                HasMany::make(
+                RelationRepeater::make(
                     'Проводки',
                     'journal_entries', 
                     resource: JournalEntryResource::class
-                )->fields([
-                    BelongsTo::make(
-                        'Счет', 
-                        'account',
-                        'name',
-                        resource: AccountResource::class
-                    ),
-                    Text::make('Сумма', 'amount'),
+                )
+                ->fields([
+                    // BelongsTo::make(
+                    //     'Счет', 
+                    //     'account',
+                    //     'name',
+                    //     resource: AccountResource::class
+                    // ),
+                    Select::make('Счёт', 'account_id')
+                        ->options(
+                            \App\Models\Account::where('is_active', true)
+                                ->pluck('name', 'account_id')
+                                ->toArray()
+                        )
+                        ->searchable(),
+                    Number::make('Сумма', 'amount'),
                     Select::make('Тип операции', 'type')
                     ->options([
                         'debit' => 'Дебет',
                         'credit' => 'Кредит'
                     ]),
-                ])
+                ])->creatable()
+                  ->removable()
             ]),
         ];
     }
