@@ -22,6 +22,7 @@ use App\MoonShine\Resources\Account\AccountResource;
 use MoonShine\Support\ListOf;
 use MoonShine\Laravel\Fields\Relationships\HasMany;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
+// use MoonShine\Laravel\Fields\Relationships\RelationRepeater;
 use Throwable;
 
 
@@ -41,7 +42,7 @@ class TransactionIndexPage extends IndexPage
             ID::make(column: 'transaction_id'),
             Date::make('Дата транзакции', 'date')->withTime(),
             Textarea::make('Описание', 'description'),
-            // HasMany::make(
+            // RelationRepeater::make(
             //     'Проводки',
             //     'journal_entries', 
             //     resource: JournalEntryResource::class
@@ -61,7 +62,6 @@ class TransactionIndexPage extends IndexPage
             // ])
         ];
     }
-
 
     /**
      * @return ListOf<ActionButtonContract>

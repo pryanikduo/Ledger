@@ -39,8 +39,8 @@ class AccountFormPage extends FormPage
                 Number::make('Код', 'code'),
                 Select::make('Тип счета', 'type')
                     ->options([
-                        'asset' => 'Имущество',
-                        'liability' => 'Мат. ответственность',
+                        'asset' => 'Актив',
+                        'liability' => 'Пассив',
                         'equity' => 'Капитал',
                         'revenue' => 'Доход',
                         'expense' => 'Расход',

@@ -23,7 +23,6 @@ use Throwable;
  */
 class AccountDetailPage extends DetailPage
 {
-    protected string $title = 'Подробный просмотр';
     /**
      * @return list<FieldContract>
      */
