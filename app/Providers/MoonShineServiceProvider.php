@@ -10,6 +10,9 @@ use MoonShine\Laravel\DependencyInjection\MoonShine;
 use MoonShine\Laravel\DependencyInjection\MoonShineConfigurator;
 use App\MoonShine\Resources\MoonShineUser\MoonShineUserResource;
 use App\MoonShine\Resources\MoonShineUserRole\MoonShineUserRoleResource;
+use App\MoonShine\Resources\Account\AccountResource;
+use App\MoonShine\Resources\Transaction\TransactionResource;
+use App\MoonShine\Resources\JournalEntry\JournalEntryResource;
 
 class MoonShineServiceProvider extends ServiceProvider
 {
@@ -22,6 +25,9 @@ class MoonShineServiceProvider extends ServiceProvider
             ->resources([
                 MoonShineUserResource::class,
                 MoonShineUserRoleResource::class,
+                AccountResource::class,
+                TransactionResource::class,
+                JournalEntryResource::class,
             ])
             ->pages([
                 ...$core->getConfig()->getPages(),

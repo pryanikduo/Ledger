@@ -9,6 +9,10 @@ use MoonShine\ColorManager\Palettes\RosePalette;
 use MoonShine\ColorManager\ColorManager;
 use MoonShine\Contracts\ColorManager\ColorManagerContract;
 use MoonShine\Contracts\ColorManager\PaletteContract;
+use App\MoonShine\Resources\Account\AccountResource;
+use MoonShine\MenuManager\MenuItem;
+use App\MoonShine\Resources\Transaction\TransactionResource;
+use App\MoonShine\Resources\JournalEntry\JournalEntryResource;
 
 final class MoonShineLayout extends AppLayout
 {
@@ -28,6 +32,9 @@ final class MoonShineLayout extends AppLayout
     {
         return [
             ...parent::menu(),
+            MenuItem::make(AccountResource::class, 'Accounts'),
+            MenuItem::make(TransactionResource::class, 'Transactions'),
+            // MenuItem::make(JournalEntryResource::class, 'JournalEntries'),
         ];
     }
 
