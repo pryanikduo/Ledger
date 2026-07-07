@@ -14,6 +14,7 @@ use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Date;
 use MoonShine\UI\Fields\Switcher;
+use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Select;
 use App\MoonShine\Resources\Account\AccountResource;
 use MoonShine\Support\ListOf;
@@ -44,6 +45,7 @@ class AccountIndexPage extends IndexPage
                     'revenue' => 'Доход',
                     'expense' => 'Расход',
                 ]),
+            Number::make('Остаток по счету', 'balance'),
             Switcher::make('Активность', 'is_active'),
             Date::make('Дата создания', 'created_at')->withTime(),
         ];
