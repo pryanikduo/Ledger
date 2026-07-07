@@ -153,7 +153,7 @@ class LedgerService {
         return $result;
     }
     // Приватный метод для вычисления нормального сальдо
-    private function calculateBalance(float $sumDebit, float $sumCredit, string $accountType) {
+    public function calculateBalance(float $sumDebit, float $sumCredit, string $accountType) {
         if($accountType == 'asset' || $accountType == 'expense') {
             return $sumDebit - $sumCredit;
         } else {
