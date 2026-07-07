@@ -14,14 +14,18 @@ class JournalEntryObserver
     }
 
     public function updated(JournalEntry $entry): void {
-        $original = $entry->getOriginal;
+        $original = $entry->getOriginal();
 
         $oldAccountId = $original['account_id'] ?? null;
         $newAccountId = $entry->account_id;
         $oldAmount = $original['amount'] ?? 0;
         $newAmount = $entry->amount;
+        $oldType = $original['type'] ?? null;
+        $newType = $entry->type;
 
-        if($oldAccountId == $newAccountId && $oldAmount == $newAmount) {
+        if($oldAccountId == $newAccountId 
+            && $oldAmount == $newAmount
+            && $oldType == $newType) {
             return;
         }
 
@@ -34,6 +38,7 @@ class JournalEntryObserver
     }
 
     public function deleted(JournalEntry $entry): void {
+        Log::info();
         $this->recalculateBalance($entry->account_id);
     }
 

@@ -16,6 +16,7 @@ use MoonShine\UI\Fields\Date;
 use MoonShine\UI\Fields\DateRange;
 use MoonShine\UI\Fields\Textarea;
 use MoonShine\UI\Fields\Select;
+use MoonShine\UI\Fields\Switcher;
 use App\MoonShine\Resources\Transaction\TransactionResource;
 use App\MoonShine\Resources\JournalEntry\JournalEntryResource;
 use App\MoonShine\Resources\Account\AccountResource;
@@ -42,6 +43,7 @@ class TransactionIndexPage extends IndexPage
             ID::make(column: 'transaction_id'),
             Date::make('Дата транзакции', 'date')->withTime(),
             Textarea::make('Описание', 'description'),
+            Switcher::make('Провдена', 'is_posted'),
             // RelationRepeater::make(
             //     'Проводки',
             //     'journal_entries', 

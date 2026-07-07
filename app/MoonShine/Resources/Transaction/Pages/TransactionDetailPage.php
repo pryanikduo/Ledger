@@ -16,6 +16,7 @@ use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Textarea;
 use MoonShine\UI\Fields\Select;
+use MoonShine\UI\Fields\Switcher;
 use MoonShine\Laravel\Fields\Relationships\HasMany;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use Throwable;
@@ -36,6 +37,7 @@ class TransactionDetailPage extends DetailPage
             ID::make(column: 'transaction_id'),
             Text::make('Дата проведения транзакции', 'date'),
             Textarea::make('Описание', 'description'),
+            Switcher::make('Провдена', 'is_posted'),
             Text::make('Дата создания транзакции', 'created_at'),
             HasMany::make(
                 'Проводки',
