@@ -19,6 +19,7 @@ use MoonShine\UI\Fields\Date;
 use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Textarea;
 use MoonShine\UI\Fields\Select;
+use MoonShine\UI\Fields\Switcher;
 use MoonShine\UI\Fields\Number;
 use MoonShine\Laravel\Fields\Relationships\HasMany;
 use MoonShine\Laravel\Fields\Relationships\RelationRepeater;
@@ -42,6 +43,7 @@ class TransactionFormPage extends FormPage
                 ID::make(column: 'transaction_id'),
                 Date::make('Дата создания', 'date')->withTime(),
                 Textarea::make('Описание', 'description'),
+                Switcher::make('Провдена', 'is_posted'),
                 RelationRepeater::make(
                     'Проводки',
                     'journal_entries', 

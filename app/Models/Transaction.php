@@ -10,6 +10,10 @@ class Transaction extends Model
     protected $table = 'transactions';
     protected $primaryKey = 'transaction_id';
 
+    protected $casts = [
+        'is_posted' => 'boolean',
+    ];
+
     protected $fillable = [
         'date',
         'description'
