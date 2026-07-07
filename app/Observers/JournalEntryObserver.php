@@ -38,6 +38,7 @@ class JournalEntryObserver
     }
 
     public function deleted(JournalEntry $entry): void {
+        Log::info();
         $this->recalculateBalance($entry->account_id);
     }
 
