@@ -100,6 +100,7 @@ return [
 
     'pages' => [
         'dashboard' => App\MoonShine\Pages\Dashboard::class,
+        'turnover-balance' => App\MoonShine\Pages\TurnoverBalancePage::class,
         'profile' => ProfilePage::class,
         'login' => LoginPage::class,
         'error' => ErrorPage::class,

@@ -13,6 +13,11 @@ use App\MoonShine\Resources\MoonShineUserRole\MoonShineUserRoleResource;
 use App\MoonShine\Resources\Account\AccountResource;
 use App\MoonShine\Resources\Transaction\TransactionResource;
 use App\MoonShine\Resources\JournalEntry\JournalEntryResource;
+use App\MoonShine\Pages\TurnoverBalancePage;
+
+use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Route;
+use MoonShine\Laravel\DefaultRoutes;
 
 class MoonShineServiceProvider extends ServiceProvider
 {
@@ -31,7 +36,12 @@ class MoonShineServiceProvider extends ServiceProvider
             ])
             ->pages([
                 ...$core->getConfig()->getPages(),
+                TurnoverBalancePage::class,
             ])
         ;
+        Route::moonshine(function () {
+            Route::post('/turnover/calculate', [TurnoverBalancePage::class, 'calculate'])
+                ->name('moonshine.turnover.calculate');
+        });
     }
 }

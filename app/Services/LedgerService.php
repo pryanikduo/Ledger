@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Transaction;
 use App\Models\JournalEntry;
+use App\Models\Account;
 use App\Exceptions\Handler;
 use Illuminate\Support\Facades\DB;
 
@@ -86,5 +87,77 @@ class LedgerService {
             }
             return $transaction;
         });
+    }
+
+    public function getTurnoverBalance(string $startDate, string $endDate): array {
+        // Получаем сумму дебета и сумму кредита до начала периода
+        $openingBalances = JournalEntry::query()
+            ->join('transactions', 'transactions.transaction_id', '=', 'journal_entries.transaction_id')
+            ->where('transactions.date', '<', $startDate)
+            ->groupBy('account_id')
+            ->selectRaw('journal_entries.account_id,
+                        SUM(CASE WHEN journal_entries.type = ? THEN journal_entries.amount ELSE 0 END) as sum_debit,
+                        SUM(CASE WHEN journal_entries.type = ? THEN journal_entries.amount ELSE 0 END) as sum_credit',
+                        ['debit', 'credit']
+                    )
+            ->get()
+            ->keyBy('account_id');
+
+        // Получаем сумму дебета и сумму кредита в выбранном периоде
+        $periodTurnovers = JournalEntry::query()
+            ->join('transactions', 'transactions.transaction_id', '=', 'journal_entries.transaction_id')
+            ->whereBetween('transactions.date', [$startDate, $endDate])
+            ->groupBy('account_id')
+            ->selectRaw('journal_entries.account_id,
+                        SUM(CASE WHEN journal_entries.type = ? THEN journal_entries.amount ELSE 0 END) as sum_debit,
+                        SUM(CASE WHEN journal_entries.type = ? THEN journal_entries.amount ELSE 0 END) as sum_credit',
+                        ['debit', 'credit']
+                    )
+            ->get()
+            ->keyBy('account_id');
+        
+        // Получаем все активные аккаунты
+        $activeAccounts = Account::where('is_active', true)->get();
+
+        $result = [];
+        
+        foreach($activeAccounts as $account) {
+            // Проверяем, есть ли айди аккаунта в коллекции
+            $openingID = $openingBalances->get($account->account_id); 
+            $periodID = $periodTurnovers->get($account->account_id);
+
+            $openingBalance = 0;
+            $periodDebit = 0;
+            $periodCredit = 0;
+            $periodTurnover = 0;
+
+            if($openingID !== null) {
+                $openingBalance = $this->calculateBalance($openingID->sum_debit, $openingID->sum_credit, $account->type);
+            } 
+            if($periodID !== null) {
+                $periodDebit = (float) $periodID->sum_debit;
+                $periodCredit = (float) $periodID->sum_credit;
+                $periodTurnover = $this->calculateBalance($periodDebit, $periodCredit, $account->type);
+            } 
+
+            $closingBalance = $periodTurnover + $openingBalance;
+
+            $result[$account->account_id] = [
+                'opening_balance' => $openingBalance,
+                'debit_turnover' => $periodDebit,
+                'credit_turnover' => $periodCredit,
+                'closing_balance' => $closingBalance 
+            ];
+        }
+
+        return $result;
+    }
+    // Приватный метод для вычисления нормального сальдо
+    private function calculateBalance(float $sumDebit, float $sumCredit, string $accountType) {
+        if($accountType == 'asset' || $accountType == 'expense') {
+            return $sumDebit - $sumCredit;
+        } else {
+            return $sumCredit - $sumDebit;
+        }
     }
 }
