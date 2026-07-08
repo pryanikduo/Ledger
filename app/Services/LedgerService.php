@@ -70,7 +70,7 @@ class LedgerService {
                 } else {
                     unset($transaction->journal_entries);
                 
-                     $transaction->date = \Carbon\Carbon::parse($data['date'])->format('Y-m-d H:i:s');
+                    $transaction->date = \Carbon\Carbon::parse($data['date'])->format('Y-m-d H:i:s');
                     $transaction->description = $data['description'];
                     $transaction->save();
 
