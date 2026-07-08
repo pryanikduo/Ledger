@@ -24,6 +24,8 @@ use MoonShine\Support\ListOf;
 use MoonShine\Laravel\Fields\Relationships\HasMany;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 // use MoonShine\Laravel\Fields\Relationships\RelationRepeater;
+
+use App\Models\Account;
 use Throwable;
 
 
@@ -44,24 +46,6 @@ class TransactionIndexPage extends IndexPage
             Date::make('Дата транзакции', 'date')->withTime(),
             Textarea::make('Описание', 'description'),
             Switcher::make('Провдена', 'is_posted'),
-            // RelationRepeater::make(
-            //     'Проводки',
-            //     'journal_entries', 
-            //     resource: JournalEntryResource::class
-            // )->fields([
-            //     BelongsTo::make(
-            //         'Счет', 
-            //         'account',
-            //         'name',
-            //         resource: AccountResource::class
-            //     ),
-            //     Text::make('Сумма', 'amount'),
-            //     Select::make('Тип операции', 'type')
-            //     ->options([
-            //         'debit' => 'Дебет',
-            //         'credit' => 'Кредит'
-            //     ]),
-            // ])
         ];
     }
 
@@ -80,6 +64,22 @@ class TransactionIndexPage extends IndexPage
     {
         return [
             DateRange::make('Дата транзакции', 'date'),
+            Select::make('Счёт', 'account_id')
+                ->options(
+                    Account::where('is_active', true)
+                        ->pluck('name', 'account_id')
+                        ->toArray()
+                )
+                ->nullable()
+                ->onApply(function ($query, $value) {
+                    if (blank($value)) {
+                        return $query;
+                    }
+
+                    return $query->whereHas('journal_entries', function ($q) use ($value) {
+                        $q->where('account_id', $value);
+                    });
+                }),
         ];
     }
 
